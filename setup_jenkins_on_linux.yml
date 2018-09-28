@@ -32,6 +32,10 @@
     - name: Start Jenkins at Boot Time
       command: chkconfig jenkins on
 
+    - name: Wait The File Exist
+      wait for:
+        path:  /var/lib/jenkins/secrets/initialAdminPassword
+
     - name: Retrive Password To Unlock Jenkins
       command: cat /var/lib/jenkins/secrets/initialAdminPassword
       register: password
