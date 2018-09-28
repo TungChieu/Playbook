@@ -1,0 +1,10 @@
+- name: INSTALL JENKINS
+  hosts: Group_LINUX
+ 
+  tasks: 
+
+    - name: Retrive Password To Unlock Jenkins
+      command: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: password
+
+    - debug: msg="Password To Unlock Jenkins = {{password.stdout}}"
