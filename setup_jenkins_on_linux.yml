@@ -1,0 +1,39 @@
+- name: INSTALL JENKINS
+  hosts: Group_LINUX
+  vars:
+    java_tarball: jre-8u181-linux-x64.tar.gz
+    java_local: /usr/local    
+    java_dir: jre1.8.0_181
+    jenkins_rpm: jenkins-2.143-1.1.noarch.rpm
+    source_local: /depot/packages
+ 
+  tasks: 
+    - name: Extract Java Tarball
+      unarchive:
+        src: /{{source_local}}/{{java_tarball}}
+        dest: /{{java_local}}
+        remote_src: yes
+
+    - name: Rename Java Directory
+      command: mv {{java_local}}/{{java_dir}} {{java_local}}/java
+
+    - name: Install Jenkins
+      command: rpm -ih {{source_local}}/{{jenkins_rpm}}
+
+    - name: Modify Jenkins Config
+      lineinfile:
+        path: /etc/init.d/jenkins
+        line: '/usr/local/java/bin/java'
+        insertafter: /usr/bin/java
+
+    - name: Start Jenkins Service
+      command: systemctl start jenkins
+
+    - name: Start Jenkins at Boot Time
+      command: chkconfig jenkins on
+
+    - name: Retrive Password To Unlock Jenkins
+      command: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: password
+
+    - debug: msg="Password To Unlock Jenkins = {{password.stdout}}"
