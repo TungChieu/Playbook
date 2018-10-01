@@ -7,7 +7,6 @@
     jenkins_rpm: jenkins-2.144-1.1.noarch.rpm
     mount_point: /depot
     share: 10.10.2.234:/depot
-    source_local: /depot/packages
  
   tasks: 
 
@@ -16,12 +15,12 @@
         path: /{{mount_point}}
         state: directory
 
-    - name: Mount To Depot
+    - name: Mount To The Share
       command: mount -t nfs {{share}} {{mount_point}}
 
     - name: Extract Java Tarball
       unarchive:
-        src: /{{source_local}}/{{java_tarball}}
+        src: /{{mount_point}}/packages/{{java_tarball}}
         dest: /{{java_local}}
         remote_src: yes
 
@@ -29,7 +28,7 @@
       command: mv {{java_local}}/{{java_dir}} {{java_local}}/java
 
     - name: Install Jenkins
-      command: rpm -ih {{source_local}}/{{jenkins_rpm}}
+      command: rpm -ih {{mount_point}}/packages/{{jenkins_rpm}}
 
     - name: Modify Jenkins Config
       lineinfile:
