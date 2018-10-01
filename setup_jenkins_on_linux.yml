@@ -1,5 +1,5 @@
 - name: INSTALL JENKINS
-  hosts: Group_LINUX
+  hosts: Group_PLAYBOOK
   vars:
     java_tarball: jre-8u181-linux-x64.tar.gz
     java_local: /usr/local    
