@@ -5,23 +5,19 @@
     java_local: /usr/local    
     java_dir: jre1.8.0_181
     jenkins_rpm: jenkins-2.144-1.1.noarch.rpm
+    mount_point: /depot
+    share: 10.10.2.234:/depot
     source_local: /depot/packages
  
   tasks: 
 
     - name: Create Mount Point
       file:
-        path: /depot
+        path: /{{mount_point}}
         state: directory
 
-    - name: Modify fstab
-      lineinfile::
-        path: /etc/fstab
-        line: '10.10.2.234:/depot   /depot   nfs   defaults   0 0'
-        insertafter: UUID
-
     - name: Mount To Depot
-      command: mount -a
+      command: mount -t nfs {{share}} {{mount_point}}
 
     - name: Extract Java Tarball
       unarchive:
@@ -46,6 +42,14 @@
 
     - name: Start Jenkins at Boot Time
       command: chkconfig jenkins on
+
+    - name: Cleaning System ...
+
+    - name: Unmount The Share
+      command: umount {{mount_point}}
+
+    - name: Remove The Mount Point
+      command: rm -rf {{mount_point}}
 
     - name: Wait The File Exist
       wait_for:
