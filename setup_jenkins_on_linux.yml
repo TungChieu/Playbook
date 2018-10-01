@@ -8,6 +8,21 @@
     source_local: /depot/packages
  
   tasks: 
+
+    - name: Create Mount Point
+      file:
+        path: /depot
+        state: directory
+
+    - name: Modify fstab
+      lineinfile::
+        path: /etc/fstab
+        line: '10.10.2.234:/depot   /depot   nfs   defaults   0 0'
+        insertafter: UUID
+
+    - name: Mount To Depot
+      command: mount -a
+
     - name: Extract Java Tarball
       unarchive:
         src: /{{source_local}}/{{java_tarball}}
