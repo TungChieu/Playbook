@@ -42,11 +42,10 @@
     - name: Start Jenkins at Boot Time
       command: chkconfig jenkins on
 
-    - name: Cleaning System ...
-      - name: Unmount The Share
+    - name: Cleaning System ... Un-Mount The Share
       command: umount {{mount_point}}
 
-      - name: Remove The Mount Point
+    - name: Cleaning System... Remove The Mount Point
       command: rm -rf {{mount_point}}
 
     - name: Wait The File Exist
